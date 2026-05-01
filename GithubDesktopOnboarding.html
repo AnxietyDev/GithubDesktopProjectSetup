@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TheEnchanter — GitHub Setup Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: #7a6230;
+    --bg: #0a0908;
+    --bg2: #110f0d;
+    --bg3: #1a1714;
+    --text: #e8e0d0;
+    --text-dim: #8a7f6e;
+    --border: #2e2820;
+    --accent: #6b3fa0;
+    --accent2: #8b5fd0;
+    --red: #c0392b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(107,63,160,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 90% 80%, rgba(201,168,76,0.05) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%230a0908'/%3E%3Crect width='1' height='1' x='0' y='0' fill='%23ffffff' opacity='0.015'/%3E%3Crect width='1' height='1' x='2' y='2' fill='%23ffffff' opacity='0.01'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+
+  /* HERO */
+  header {
+    text-align: center;
+    padding: 5rem 2rem 4rem;
+    position: relative;
+  }
+
+  .rune-line {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1.1;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 40px rgba(201,168,76,0.3), 0 0 80px rgba(201,168,76,0.1);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem auto;
+    max-width: 400px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+  .divider-gem {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    box-shadow: 0 0 10px rgba(201,168,76,0.6);
+  }
+
+  /* WARNING BANNER */
+  .warning {
+    background: linear-gradient(135deg, rgba(192,57,43,0.15), rgba(192,57,43,0.05));
+    border: 1px solid rgba(192,57,43,0.4);
+    border-left: 3px solid var(--red);
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    margin: 0 2rem 3rem;
+    font-size: 0.95rem;
+    color: #e8c0bb;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+  .warning strong { color: #e87a70; font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 0.1em; }
+
+  /* STEP SECTIONS */
+  main { padding-bottom: 6rem; }
+
+  .step {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0 1.5rem;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .step.visible { opacity: 1; transform: translateY(0); }
+
+  .step-num {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .step-num-circle {
+    width: 3rem; height: 3rem;
+    border: 1px solid var(--gold-dim);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: var(--gold);
+    background: var(--bg2);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .step-num-circle::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.15);
+  }
+  .step-line {
+    flex: 1;
+    width: 1px;
+    background: linear-gradient(180deg, var(--gold-dim), transparent);
+    margin-top: 4px;
+    min-height: 2rem;
+  }
+
+  .step-content { padding-top: 0.4rem; }
+
+  h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  p { color: var(--text); margin-bottom: 0.8rem; font-weight: 300; }
+  p:last-child { margin-bottom: 0; }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--gold-dim);
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: #c8e6c9;
+    line-height: 1.6;
+    position: relative;
+    overflow-x: auto;
+  }
+  .code-block .comment { color: var(--text-dim); font-style: italic; }
+  .code-block .cmd { color: var(--gold-light); }
+
+  /* INLINE CODE */
+  code {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82em;
+    color: var(--gold-light);
+  }
+
+  /* NOTE BOXES */
+  .note {
+    background: rgba(107,63,160,0.1);
+    border: 1px solid rgba(107,63,160,0.3);
+    border-left: 2px solid var(--accent2);
+    padding: 0.8rem 1.2rem;
+    border-radius: 4px;
+    margin: 0.8rem 0;
+    font-size: 0.95rem;
+    color: #d0c0f0;
+  }
+  .note strong { color: var(--accent2); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.1em; }
+
+  /* COMMIT TABLE */
+  .commit-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8rem 0;
+    font-size: 0.9rem;
+  }
+  .commit-table th {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .commit-table td {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid rgba(46,40,32,0.5);
+    vertical-align: top;
+  }
+  .commit-table tr:last-child td { border-bottom: none; }
+  .tag {
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    color: var(--gold-light);
+    white-space: nowrap;
+  }
+  .commit-table td:last-child { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+  footer a { color: var(--gold-dim); text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="rune-line">Team Onboarding Guide</div>
+  <h1>TheEnchanter</h1>
+  <p class="subtitle">Setting up GitHub Desktop for the project</p>
+  <div class="divider"><div class="divider-gem"></div></div>
+</header>
+
+<div class="warning">
+  <strong>⚠ Before You Begin</strong><br/>
+  You must have been added as a collaborator on the GitHub repo before any of this will work. Ask your lead to add your GitHub username to the project first.
+</div>
+
+<main>
+<div class="wrap">
+
+  <div class="section-label">Installation & Setup</div>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-num">
+      <div class="step-num-circle">I</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h2>Download GitHub Desktop</h2>
+      <p>Download and install GitHub Desktop from <strong>desktop.github.com</strong>. Once installed, sign in with your GitHub account from <strong>File → Options → Accounts</strong>.</p>
+      <div class="note"><strong>Note</strong><br/>Use the same GitHub account you were added to the repo with. If you have multiple accounts, double-check which one is active.</div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-num">
+      <div class="step-num-circle">II</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h2>Install Git LFS</h2>
+      <p>Git LFS handles the large binary files in the project (Blueprints, maps, textures). Without it your clone will be broken. Download from <strong>git-lfs.com</strong>, install it, then open Git Bash and run:</p>
+      <div class="code-block"><span class="cmd">git lfs install</span></div>
+      <p>You only need to do this once per machine.</p>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-num">
+      <div class="step-num-circle">III</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h2>Clone the Repository</h2>
+      <p>In GitHub Desktop go to <strong>File → Clone Repository → URL</strong> and paste the repo URL. Set your local path to somewhere on your machine — ideally your D: drive if you have one, as UE projects get large.</p>
+      <div class="code-block"><span class="comment"># Recommended local path</span>
+D:\GitHub\TheEnchanter</div>
+      <p>Click <strong>Clone</strong> and wait for it to finish — LFS assets may take a few minutes to download.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Daily Workflow</div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-num">
+      <div class="step-num-circle">IV</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h2>Always Fetch Before You Start</h2>
+      <p>Every time you sit down to work, hit <strong>Fetch origin</strong> at the top of GitHub Desktop before opening Unreal. This pulls any changes your teammates pushed since you last worked.</p>
+      <div class="note"><strong>Why this matters</strong><br/>Opening UE before fetching means you might start editing an asset someone else already changed. Merging binary files is impossible — one person's work gets lost.</div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-num">
+      <div class="step-num-circle">V</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h2>Lock Files Before Editing</h2>
+      <p>Before editing any <code>.uasset</code> or <code>.umap</code> file, lock it so nobody else edits it at the same time. Open Git Bash in the project folder and run:</p>
+      <div class="code-block"><span class="cmd">git lfs lock Content/Path/To/YourFile.uasset</span>
+<span class="comment"># example</span>
+<span class="cmd">git lfs lock Content/Maps/DungeonLevel01.umap</span></div>
+      <p>When you're done and have pushed your changes, unlock it:</p>
+      <div class="code-block"><span class="cmd">git lfs unlock Content/Maps/DungeonLevel01.umap</span></div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-num">
+      <div class="step-num-circle">VI</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h2>Committing Your Work</h2>
+      <p>When you're ready to save your work to the repo, go to GitHub Desktop. You'll see your changed files listed on the left. Write a commit message in the box at the bottom — <strong>this is mandatory and must follow the format below</strong>:</p>
+      <div class="code-block"><span class="comment"># Format</span>
+[Category] Short description of what changed
+
+<span class="comment"># Examples</span>
+<span class="cmd">[BP] Added stamina drain to sprint mechanic</span>
+<span class="cmd">[Map] Blocked out west wing of dungeon level 1</span>
+<span class="cmd">[Art] Added texture set for stone floor tiles</span>
+<span class="cmd">[Fix] Fixed player respawn spawning underground</span></div>
+
+      <table class="commit-table">
+        <tr><th>Tag</th><th>Use for</th></tr>
+        <tr><td><span class="tag">[Art]</span></td><td>Meshes, textures, materials, VFX</td></tr>
+        <tr><td><span class="tag">[Audio]</span></td><td>Sound effects, music, dialogue</td></tr>
+        <tr><td><span class="tag">[BP]</span></td><td>Blueprint changes</td></tr>
+        <tr><td><span class="tag">[Code]</span></td><td>C++ source changes</td></tr>
+        <tr><td><span class="tag">[Map]</span></td><td>Level / map edits</td></tr>
+        <tr><td><span class="tag">[UI]</span></td><td>Widget or HUD changes</td></tr>
+        <tr><td><span class="tag">[Anim]</span></td><td>Animation assets or AnimBPs</td></tr>
+        <tr><td><span class="tag">[Fix]</span></td><td>Bug fixes</td></tr>
+        <tr><td><span class="tag">[Config]</span></td><td>.ini or project settings</td></tr>
+      </table>
+
+      <div class="warning" style="margin: 0.8rem 0;">
+        <strong>❌ Not acceptable</strong><br/>
+        Commit messages like <code>update</code>, <code>fix</code>, <code>changes</code>, <code>wip</code>, or <code>assets</code> tell your teammates nothing. These will be asked to be redone.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step">
+    <div class="step-num">
+      <div class="step-num-circle">VII</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h2>Never Commit These Folders</h2>
+      <p>These folders are already in <code>.gitignore</code> and should never appear in your changes list. If they do, something is wrong — ask your lead before committing:</p>
+      <div class="code-block"><span class="comment"># These are auto-generated and must stay out of the repo</span>
+Binaries/
+Saved/
+Intermediate/
+DerivedDataCache/
+Build/</div>
+    </div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step">
+    <div class="step-num">
+      <div class="step-num-circle">VIII</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h2>Push &amp; Unlock</h2>
+      <p>After committing, click <strong>Push origin</strong> in GitHub Desktop to send your changes to the remote repo. Then unlock any LFS files you locked earlier.</p>
+      <div class="note"><strong>Reminder</strong><br/>Don't hold locks overnight or across sessions. If you lock a file and forget to unlock it, nobody else on the team can edit it until you do.</div>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    TheEnchanter — Team Repository &nbsp;·&nbsp; Questions? Ask in the team Discord &nbsp;·&nbsp;
+    <a href="https://docs.github.com/en/desktop" target="_blank">GitHub Desktop Docs ↗</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll-triggered step reveals
+  const steps = document.querySelectorAll('.step');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  steps.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
